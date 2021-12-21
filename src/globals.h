@@ -42,9 +42,10 @@ extern int lineno;
 /***********   parser 的语法树结构     ************/
 /**************************************************/
 
-typedef enum {StmtK,ExpK} NodeKind;
-typedef enum {IfK,RepeatK,AssignK,ReadK,WriteK} StmtKind;
+typedef enum {StmtK,ExpK,DeclK} NodeKind;
+typedef enum {IfK,RepeatK,AssignK,ReadK,WriteK,WhileK} StmtKind;
 typedef enum {OpK,ConstK,IdK} ExpKind;
+typedef enum {IntK,BoolK,CharK} DeclKind;
 
 /* 用于表达式的类型检查 */
 typedef enum {Void,Integer,Boolean} ExpType;
@@ -66,6 +67,7 @@ typedef struct treeNode {
     union { 
         StmtKind stmt; 
         ExpKind exp;
+        DeclKind decl;
     } kind;
 
     /* 属性 */

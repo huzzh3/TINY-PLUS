@@ -2,9 +2,14 @@
   in TINY language -
   computes factorial
 }
-int x
-read x; { input an integer }
+char x,y,z;
+int a,b,c;
+bool d,e
+read x;
 if 0 < x then { don't compute if x <= 0 }
+  while 0 < x do
+    x := 1
+  end;
   fact := 1;
   repeat
     fact := fact * x;

@@ -117,12 +117,31 @@ TreeNode * newExpNode(ExpKind kind) {
         for (int i=0;i < MAXCHILDREN; i++) {
             t->child[i] = NULL;
         }
-        
+
         t->sibling = NULL;
         t->nodekind = ExpK;
         t->kind.exp = kind;
         t->lineno = lineno;
         t->type = Void;
+    }
+    return t;
+}
+
+/* newDeclNode 函数产生一个用于语法树的新的声明节点 */
+TreeNode *newDeclNode(DeclKind kind) { 
+    TreeNode *t = (TreeNode *) malloc(sizeof(TreeNode));
+    if (t == NULL) {
+        fprintf(listing,"Out of memory error at line %d\n",lineno);
+    }
+    else {
+        for (int i=0;i < MAXCHILDREN; i++) {
+            t->child[i] = NULL;
+        }
+
+        t->sibling = NULL;
+        t->nodekind = DeclK;
+        t->kind.decl = kind;
+        t->lineno = lineno;
     }
     return t;
 }
@@ -171,41 +190,60 @@ void printTree(TreeNode * tree) {
         printSpaces();
         if (tree->nodekind == StmtK) { 
             switch (tree->kind.stmt) {
-            case IfK:
-                fprintf(listing,"If\n");
-                break;
-            case RepeatK:
-                fprintf(listing,"Repeat\n");
-                break;
-            case AssignK:
-                fprintf(listing,"Assign to: %s\n",tree->attr.name);
-                break;
-            case ReadK:
-                fprintf(listing,"Read: %s\n",tree->attr.name);
-                break;
-            case WriteK:
-                fprintf(listing,"Write\n");
-                break;
-            default:
-                fprintf(listing,"Unknown ExpNode kind\n");
-                break;
+                case IfK:
+                    fprintf(listing,"If\n");
+                    break;
+                case RepeatK:
+                    fprintf(listing,"Repeat\n");
+                    break;
+                case AssignK:
+                    fprintf(listing,"Assign to: %s\n",tree->attr.name);
+                    break;
+                case ReadK:
+                    fprintf(listing,"Read: %s\n",tree->attr.name);
+                    break;
+                case WriteK:
+                    fprintf(listing,"Write\n");
+                    break;
+                case WhileK:
+                    fprintf(listing,"While\n");
+                    break;
+                default:
+                    fprintf(listing,"Unknown ExpNode kind\n");
+                    break;
             }
         }
         else if (tree->nodekind == ExpK) { 
             switch (tree->kind.exp) {
-            case OpK:
-                fprintf(listing,"Op: ");
-                printToken(tree->attr.op,"\0");
-                break;
-            case ConstK:
-                fprintf(listing,"Const: %d\n",tree->attr.val);
-                break;
-            case IdK:
-                fprintf(listing,"Id: %s\n",tree->attr.name);
-                break;
-            default:
-                fprintf(listing,"Unknown ExpNode kind\n");
-                break;
+                case OpK:
+                    fprintf(listing,"Op: ");
+                    printToken(tree->attr.op,"\0");
+                    break;
+                case ConstK:
+                    fprintf(listing,"Const: %d\n",tree->attr.val);
+                    break;
+                case IdK:
+                    fprintf(listing,"Id: %s\n",tree->attr.name);
+                    break;
+                default:
+                    fprintf(listing,"Unknown ExpNode kind\n");
+                    break;
+            }
+        }
+        else if (tree->nodekind == DeclK) {
+            switch (tree->kind.decl) {
+                case IntK:
+                    fprintf(listing, "INT:\n");
+                    break;
+                case BoolK:
+                    fprintf(listing, "BOOL:\n");
+                    break;
+                case CharK:
+                    fprintf(listing, "CHAR:\n");
+                    break;
+                default:
+                    fprintf(listing, "Unknown DeclNode kind\n");
+                    break;
             }
         }
         else {
@@ -217,6 +255,7 @@ void printTree(TreeNode * tree) {
         
         // 输出兄弟节点的值
         tree = tree->sibling;
+
     }
     UNINDENT;
 }

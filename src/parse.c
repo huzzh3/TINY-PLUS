@@ -7,13 +7,19 @@
 static TokenType token; 
 
 /* 函数声明 */
+static TreeNode * program(void);
 static TreeNode * stmt_sequence(void);
+static TreeNode * declarations(void);
+static TreeNode * decl(void);
+static TreeNode * type_specifer(void);
+static TreeNode * varlist(void);
 static TreeNode * statement(void);
 static TreeNode * if_stmt(void);
 static TreeNode * repeat_stmt(void);
 static TreeNode * assign_stmt(void);
 static TreeNode * read_stmt(void);
 static TreeNode * write_stmt(void);
+static TreeNode * while_stmt(void);
 static TreeNode * expr(void);
 static TreeNode * simple_exp(void);
 static TreeNode * term(void);
@@ -38,8 +44,28 @@ static void match(TokenType expected) {
     }
 }
 
-/*  program -> stmt_sequence */
-TreeNode * stmt_sequence(void) { 
+/*  program -> declarations stmt_sequence */
+TreeNode *program(void) {
+    TreeNode *t = declarations();
+    TreeNode *p = stmt_sequence();
+
+    if (t != NULL) {
+        if (p != NULL) {
+            /* 将 stmt_sequence 接到 declarations 后面 */
+            TreeNode *q = t;
+            while (q->sibling != NULL) {
+                q = q->sibling;
+            }
+            q->sibling = p;
+        }
+    }
+
+    return t;
+}
+
+
+/* stmt_sequence -> statement {; statement} */
+TreeNode * stmt_sequence(void) {
     TreeNode * t = statement();
     TreeNode * p = t;
     while ((token != ENDFILE) && (token != END) && (token != ELSE) && (token != UNTIL)) {
@@ -63,6 +89,78 @@ TreeNode * stmt_sequence(void) {
             }
         }
     }
+
+    return t;
+}
+
+/* declaration -> decl {;, declarations} */
+TreeNode *declarations(void) {
+    TreeNode *t = decl();
+    TreeNode *p = t;
+
+    while (token == SEMI) {
+        match(SEMI);
+        TreeNode *q = decl();
+        if (q != NULL) {
+            if (t == NULL) {
+                t = p = q;
+            }
+            else {
+                p->sibling = q;
+                p = q;
+            }
+        }
+    }
+
+    return t;
+}
+
+/* decl -> type-specifier varlist */
+TreeNode *decl(void) {
+    TreeNode *t = type_specifer();
+    TreeNode *p = varlist();
+
+    if (t != NULL && p != NULL) {
+        t->child[0] = p;
+    }
+
+    return t;
+}
+
+/* type-specifier -> int|bool|char */
+TreeNode *type_specifer(void) {
+    TreeNode *t = NULL;
+
+    if (token == INT) {
+        t = newDeclNode(IntK);
+        match(INT);
+    }
+    else if (token == BOOL) {
+        t = newDeclNode(BoolK);
+        match(BOOL);
+    }
+    else if (token == CHAR) {
+        t = newDeclNode(CharK);
+        match(CHAR);
+    }
+
+    return t;
+}
+
+TreeNode *varlist(void) {
+    TreeNode *t = factor();
+    TreeNode *p = t;
+
+    while (token == COMMA) {
+        match(COMMA);
+        TreeNode *q = factor();
+
+        if (q != NULL) {
+            p->sibling = q;
+            p = q;
+        }
+    }
+
     return t;
 }
 
@@ -85,6 +183,9 @@ TreeNode * statement(void) {
         case WRITE : 
             t = write_stmt(); 
             break;
+        case WHILE :
+            t = while_stmt();
+            break;
         default : 
             syntaxError("unexpected token -> ");
             printToken(token,tokenString);
@@ -96,7 +197,7 @@ TreeNode * statement(void) {
 }
 
 /* if_stmt -> if exp then stmt_sequence [else stmt_sequence] end */
-TreeNode *if_stmt(void) { 
+TreeNode *if_stmt(void) {
     /* 产生一个新的节点 */
     TreeNode *t = newStmtNode(IfK);
 
@@ -111,7 +212,7 @@ TreeNode *if_stmt(void) {
     /* 进行匹配，并移动 token */
     match(THEN);
 
-    if (t!=NULL) {
+    if (t != NULL) {
         /* if 语句第二个孩子节点必须是语句 */
         t->child[1] = stmt_sequence();
     }
@@ -184,6 +285,27 @@ TreeNode * write_stmt(void) {
     if (t!=NULL) {
         t->child[0] = expr();
     }
+
+    return t;
+}
+
+/* while_stmt -> while bool_exp do stmt_sequence end */
+TreeNode *while_stmt(void) {
+    TreeNode *t = newStmtNode(WhileK);
+
+    match(WHILE);
+
+    if (t != NULL) {
+        t->child[0] = expr();
+    }
+
+    match(DO);
+
+    if (t != NULL) {
+        t->child[1] = stmt_sequence();
+    }
+
+    match(END);
 
     return t;
 }
@@ -269,7 +391,7 @@ TreeNode * factor(void) {
             token = getToken();
             break;
     }
-    
+
     return t;
 }
 
@@ -282,8 +404,8 @@ TreeNode * factor(void) {
 TreeNode * parse(void) { 
     TreeNode * t;
     token = getToken();
-    t = stmt_sequence();
-    if (token!=ENDFILE) {
+    t = program();
+    if (token != ENDFILE) {
         syntaxError("Code ends before file\n");
     }
     return t;
