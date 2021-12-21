@@ -87,56 +87,63 @@ void printToken( TokenType token, const char* tokenString )
     }
 }
 
-/* Function newStmtNode creates a new statement
- * node for syntax tree construction
- */
-TreeNode * newStmtNode(StmtKind kind)
-{ TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
-  int i;
-  if (t==NULL)
-    fprintf(listing,"Out of memory error at line %d\n",lineno);
-  else {
-    for (i=0;i<MAXCHILDREN;i++) t->child[i] = NULL;
-    t->sibling = NULL;
-    t->nodekind = StmtK;
-    t->kind.stmt = kind;
-    t->lineno = lineno;
-  }
-  return t;
+/* newStmtNode 函数产生一个用于语法树的新的语句节点 */
+TreeNode * newStmtNode(StmtKind kind) { 
+    TreeNode *t = (TreeNode *) malloc(sizeof(TreeNode));
+    if (t == NULL) {
+        fprintf(listing,"Out of memory error at line %d\n",lineno);
+    }
+    else {
+        /* 初始化节点 */
+        for (int i=0; i<MAXCHILDREN; i++) {
+            t->child[i] = NULL;
+        }
+        
+        t->sibling = NULL;
+        t->nodekind = StmtK;
+        t->kind.stmt = kind;
+        t->lineno = lineno;
+    }
+    return t;
 }
 
-/* Function newExpNode creates a new expression 
- * node for syntax tree construction
- */
-TreeNode * newExpNode(ExpKind kind)
-{ TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
-  int i;
-  if (t==NULL)
-    fprintf(listing,"Out of memory error at line %d\n",lineno);
-  else {
-    for (i=0;i<MAXCHILDREN;i++) t->child[i] = NULL;
-    t->sibling = NULL;
-    t->nodekind = ExpK;
-    t->kind.exp = kind;
-    t->lineno = lineno;
-    t->type = Void;
-  }
-  return t;
+/* newExpNode 函数产生一个用于语法树的新的表达式节点 */
+TreeNode * newExpNode(ExpKind kind) { 
+    TreeNode *t = (TreeNode *) malloc(sizeof(TreeNode));
+    if (t==NULL) {
+        fprintf(listing,"Out of memory error at line %d\n",lineno);
+    }
+    else {
+        for (int i=0;i < MAXCHILDREN; i++) {
+            t->child[i] = NULL;
+        }
+        
+        t->sibling = NULL;
+        t->nodekind = ExpK;
+        t->kind.exp = kind;
+        t->lineno = lineno;
+        t->type = Void;
+    }
+    return t;
 }
 
-/* Function copyString allocates and makes a new
- * copy of an existing string
- */
-char * copyString(char * s)
-{ int n;
-  char * t;
-  if (s==NULL) return NULL;
-  n = strlen(s)+1;
-  t = malloc(n);
-  if (t==NULL)
-    fprintf(listing,"Out of memory error at line %d\n",lineno);
-  else strcpy(t,s);
-  return t;
+/* copyString 用于字符串的深拷贝 */
+char * copyString(char *s) { 
+    int n;
+    char * t;
+    if (s==NULL) {
+        return NULL;
+    }
+    n = strlen(s)+1;
+    t = malloc(n);
+    if (t == NULL) {
+        fprintf(listing,"Out of memory error at line %d\n",lineno);
+    }
+    else {
+        strcpy(t,s);
+    }
+
+    return t;
 }
 
 /* Variable indentno is used by printTree to
@@ -159,7 +166,6 @@ static void printSpaces(void) {
  * 输出的时候通过缩进来表示节点之间的关系(如子节点和父节点的关系)
  */
 void printTree(TreeNode * tree) { 
-    int i;
     INDENT;
     while (tree != NULL) {
         printSpaces();
@@ -202,9 +208,14 @@ void printTree(TreeNode * tree) {
                 break;
             }
         }
-        else fprintf(listing,"Unknown node kind\n");
-        for (i=0;i<MAXCHILDREN;i++)
+        else {
+            fprintf(listing,"Unknown node kind\n");
+        } 
+        for (int i=0; i < MAXCHILDREN; i++) {
             printTree(tree->child[i]);
+        }
+        
+        // 输出兄弟节点的值
         tree = tree->sibling;
     }
     UNINDENT;

@@ -71,8 +71,9 @@ typedef struct treeNode {
     /* 属性 */
     union { 
         TokenType op;
+        /* 假如要输出 Const: 0，就必须要用 val 记录下 0 */
         int val;
-        /* 加入要输出 Assign to: fact，就必须要用 name 来记录下 fact */
+        /* 假如要输出 Assign to: fact，就必须要用 name 来记录下 fact */
         char * name; 
     } attr;
 
