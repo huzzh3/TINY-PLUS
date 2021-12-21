@@ -313,7 +313,7 @@ TreeNode *while_stmt(void) {
 /* exp -> simple-exp [comparision-op simple-exp] */
 TreeNode *expr(void) { 
     TreeNode *t = simple_exp();
-    if ((token==LT)||(token==EQ)) {
+    if ((token==LT)||(token==EQ)||(token==GT)||(token==LE)||(token==GE)) {
         TreeNode * p = newExpNode(OpK);
         if (p != NULL) {
             p->child[0] = t;
