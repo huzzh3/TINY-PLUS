@@ -1,19 +1,18 @@
 { Sample program
-  in TINY language -
-  computes factorial
+  in TINY language
 }
 char x,y,z;
-int a,b,c;
-bool d,e
+int fact;
+bool a,b
 read x;
-if 0 < x then { don't compute if x <= 0 }
-  while 0 <= x do
+while 0 >= x do
     x := 1
-  end;
-  fact := 1;
-  repeat
-    fact := fact * x;
-    x := x - 1
-  until x = 0;
-  write fact  { output factorial of x }
+end;
+if 0 < x then { don't compute if x <= 0 }
+    fact := 1;
+    repeat
+        fact := fact * x;
+        x := x - 1
+    until x = 0;
+    write fact  { output factorial of x }
 end
