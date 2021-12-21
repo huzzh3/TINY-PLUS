@@ -15,17 +15,17 @@
 #endif
 
 /* 保留字的个数 */
-#define MAXRESERVED 8
+#define MAXRESERVED 15
 
 typedef enum {
       /* 特殊 tokens */
       ENDFILE,ERROR,
       /* 保留字 */
-      IF,THEN,ELSE,END,REPEAT,UNTIL,READ,WRITE,
+      OR,AND,INT,BOOL,CHAR,WHILE,DO,IF,THEN,ELSE,END,REPEAT,UNTIL,READ,WRITE,
       /* 多字符 tokens */
-      ID,NUM,
+      ID,NUM,STR,
       /* 特殊符号 */
-      ASSIGN,EQ,LT,PLUS,MINUS,TIMES,OVER,LPAREN,RPAREN,SEMI
+      ASSIGN,EQ,LT,PLUS,MINUS,TIMES,OVER,LPAREN,RPAREN,SEMI,GT,LE,GE,COMMA,QUOTA
 } TokenType;
 
 /* TINY 文件源 */

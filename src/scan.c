@@ -9,6 +9,9 @@ typedef enum {
     INCOMMENT,
     INNUM,
     INID,
+	INLCOM,
+	INGCOM,
+	INSTR,
     DONE
 } StateType;
 
@@ -75,6 +78,13 @@ static struct {
 	char *str;
 	TokenType tok;
 } reservedWords[MAXRESERVED] = {
+	{"or", OR},
+	{"and", AND},
+	{"int", INT},
+	{"bool", BOOL},
+	{"char", CHAR},
+	{"while", WHILE},
+	{"do", DO},
 	{"if", IF}, 
 	{"then", THEN}, 
 	{"else", ELSE}, 
@@ -132,6 +142,15 @@ TokenType getToken(void) {
       			else if (c == ':') {
 					state = INASSIGN;
 				}
+				else if (c == '<') {
+					state = INLCOM;
+				}
+				else if (c == '>') {
+					state = INGCOM;
+				}
+				else if (c == '\'') {
+					state = INSTR;
+				}
       			else if ((c == ' ') || (c == '\t') || (c == '\n')) {
 					save = FALSE;
 				} 
@@ -149,9 +168,6 @@ TokenType getToken(void) {
 							break;
 						case '=':
 							currentToken = EQ;
-							break;
-						case '<':
-							currentToken = LT;
 							break;
 						case '+':
 							currentToken = PLUS;
@@ -173,6 +189,9 @@ TokenType getToken(void) {
 							break;
 						case ';':
 							currentToken = SEMI;
+							break;
+						case ',':
+							currentToken = COMMA;
 							break;
 						default:
 							currentToken = ERROR;
@@ -201,6 +220,26 @@ TokenType getToken(void) {
 					currentToken = ERROR;
 				}
 				break;
+			case INLCOM:
+				state = DONE;
+				if (c == '=') {
+					currentToken = LE;
+				}
+				else {
+					ungetNextChar();
+					currentToken = LT;
+				}
+				break;
+			case INGCOM:
+				state = DONE;
+				if (c == '=') {
+					currentToken = GE;
+				}
+				else {
+					ungetNextChar();
+					currentToken = GT;
+				}
+				break;
 			case INNUM:
 				if (!isdigit(c)) { 
 					ungetNextChar();
@@ -209,8 +248,19 @@ TokenType getToken(void) {
 					currentToken = NUM;
 				}
 				break;
+			case INSTR:
+				if (c == '\'') {
+					currentToken = STR;
+					state = DONE;
+				}
+				else if (c == EOF) {
+					state = DONE;
+					printf("missing quote mark\n");
+					return ERROR;
+				}
+				break;
 			case INID:
-				if (!isalpha(c)) {
+				if (!isalpha(c) && !isdigit(c)) {
 					ungetNextChar();
 					save = FALSE;
 					state = DONE;

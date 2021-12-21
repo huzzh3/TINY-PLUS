@@ -27,7 +27,7 @@ FILE *listing;
 FILE *code;
 
 /* 设置 flags 用于看到输出结果 */
-int EchoSource = FALSE;
+int EchoSource = TRUE;
 int TraceScan = TRUE;
 int TraceParse = FALSE;
 int TraceAnalyze = FALSE;

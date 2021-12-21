@@ -7,42 +7,87 @@
  */
 void printToken( TokenType token, const char* tokenString )
 { 
-  switch (token)
-  { case IF:
-    case THEN:
-    case ELSE:
-    case END:
-    case REPEAT:
-    case UNTIL:
-    case READ:
-    case WRITE:
-      fprintf(listing, "(KEY, %s)\n",tokenString);
-      break;
-    case ASSIGN: 
-      fprintf(listing,"(SYM, :=)\n"); 
-      break;
-    case LT: fprintf(listing,"(SYM, <)\n"); break;
-    case EQ: fprintf(listing,"(SYM, =)\n"); break;
-    case LPAREN: fprintf(listing,"(SYM, ()\n"); break;
-    case RPAREN: fprintf(listing,"(SYM, ))\n"); break;
-    case SEMI: fprintf(listing,"(SYM, ;)\n"); break;
-    case PLUS: fprintf(listing,"(SYM, +)\n"); break;
-    case MINUS: fprintf(listing,"(SYM, -)\n"); break;
-    case TIMES: fprintf(listing,"(SYM, *)\n"); break;
-    case OVER: fprintf(listing,"(SYM, /)\n"); break;
-    case ENDFILE: fprintf(listing,"EOF\n"); break;
-    case NUM:
-      fprintf(listing, "(NUM, %s)\n",tokenString);
-      break;
-    case ID:
-      fprintf(listing, "(ID, %s)\n",tokenString);
-      break;
-    case ERROR:
-      fprintf(listing, "ERROR: %s\n",tokenString);
-      break;
-    default: /* should never happen */
-      fprintf(listing,"Unknown token: %d\n",token);
-  }
+    switch (token) { 
+        case OR:
+        case AND:
+        case INT:
+        case BOOL:
+        case CHAR:
+        case WHILE:
+        case DO:
+        case IF:
+        case THEN:
+        case ELSE:
+        case END:
+        case REPEAT:
+        case UNTIL:
+        case READ:
+        case WRITE:
+            fprintf(listing, "(KEY, %s)\n",tokenString);
+            break;
+        case ASSIGN: 
+            fprintf(listing,"(SYM, :=)\n"); 
+            break;
+        case LT: 
+            fprintf(listing,"(SYM, <)\n"); 
+            break;
+        case EQ: 
+            fprintf(listing,"(SYM, =)\n"); 
+            break;
+        case LPAREN: 
+            fprintf(listing,"(SYM, ()\n"); 
+            break;
+        case RPAREN: 
+            fprintf(listing,"(SYM, ))\n"); 
+            break;
+        case SEMI: 
+            fprintf(listing,"(SYM, ;)\n"); 
+            break;
+        case PLUS: 
+            fprintf(listing,"(SYM, +)\n"); 
+            break;
+        case MINUS: 
+            fprintf(listing,"(SYM, -)\n"); 
+            break;
+        case TIMES: 
+            fprintf(listing,"(SYM, *)\n"); 
+            break;
+        case OVER: 
+            fprintf(listing,"(SYM, /)\n"); 
+            break;
+        case GT:
+            fprintf(listing,"(SYM, >)\n"); 
+            break;
+        case LE:
+            fprintf(listing,"(SYM, <=)\n"); 
+            break;
+        case GE:
+            fprintf(listing,"(SYM, >=)\n"); 
+            break;
+        case COMMA:
+            fprintf(listing,"(SYM, ,)\n"); 
+            break;
+        case QUOTA:
+            fprintf(listing,"(SYM, \')\n"); 
+            break;
+        case ENDFILE: 
+            fprintf(listing,"EOF\n"); 
+            break;
+        case NUM:
+            fprintf(listing, "(NUM, %s)\n",tokenString);
+            break;
+        case STR:
+            fprintf(listing, "(STR, %s)\n",tokenString);
+            break;
+        case ID:
+            fprintf(listing, "(ID, %s)\n",tokenString);
+            break;
+        case ERROR:
+            fprintf(listing, "ERROR: %s\n",tokenString);
+            break;
+        default: /* 不应该发生 */
+            fprintf(listing,"Unknown token: %d\n",token);
+    }
 }
 
 /* Function newStmtNode creates a new statement

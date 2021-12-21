@@ -1,0 +1,20 @@
+{ Sample program
+  in TINY+ language -
+  test new keywords and symbols
+}
+int x;
+int y;
+int z;
+z = x and y;
+z = x or y;
+bool a1;
+char c2;
+do 
+  a = c;
+while x < 0
+while y > 1
+while z <= 2
+while a >= 3
+a,b
+'ABC'
+end
