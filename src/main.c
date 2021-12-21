@@ -38,22 +38,26 @@ int Error = FALSE;
 int main(int argc, char *argv[])
 {
     TreeNode *syntaxTree;
-    char pgm[120]; /* source code file name */
-    if (argc != 2)
-    {
+    /* Tiny 源代码的位置 */
+    char pgm[120];
+    if (argc != 2) {
         fprintf(stderr, "usage: %s <filename>\n", argv[0]);
         exit(1);
     }
     strcpy(pgm, argv[1]);
-    if (strchr(pgm, '.') == NULL)
+    if (strchr(pgm, '.') == NULL) {
         strcat(pgm, ".tny");
+    }
+    
+    /* 打开文件 */
     source = fopen(pgm, "r");
-    if (source == NULL)
-    {
+    if (source == NULL) {
         fprintf(stderr, "File %s not found\n", pgm);
         exit(1);
     }
-    listing = stdout; /* send listing to screen */
+
+    /* 将结果输出至屏幕 */
+    listing = stdout; 
     fprintf(listing, "\nTINY COMPILATION: %s\n", pgm);
 #if NO_PARSE
     while (getToken() != ENDFILE)
