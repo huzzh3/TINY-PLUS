@@ -59,6 +59,7 @@ int main(int argc, char *argv[])
     /* 将结果输出至屏幕 */
     listing = stdout; 
     fprintf(listing, "\nTINY COMPILATION: %s\n", pgm);
+    
 #if NO_PARSE
     while (getToken() != ENDFILE)
         ;

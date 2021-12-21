@@ -1,11 +1,3 @@
-/****************************************************/
-/* File: globals.h                                  */
-/* Global types and vars for TINY compiler          */
-/* must come before other include files             */
-/* Compiler Construction: Principles and Practice   */
-/* Kenneth C. Louden                                */
-/****************************************************/
-
 #ifndef _GLOBALS_H_
 #define _GLOBALS_H_
 
@@ -22,28 +14,32 @@
 #define TRUE 1
 #endif
 
-/* MAXRESERVED = the number of reserved words */
+/* 保留字的个数 */
 #define MAXRESERVED 8
 
-typedef enum 
-    /* book-keeping tokens */
-   {ENDFILE,ERROR,
-    /* 保留字 */
-    IF,THEN,ELSE,END,REPEAT,UNTIL,READ,WRITE,
-    /* multicharacter tokens */
-    ID,NUM,
-    /* special symbols */
-    ASSIGN,EQ,LT,PLUS,MINUS,TIMES,OVER,LPAREN,RPAREN,SEMI
-   } TokenType;
+typedef enum {
+      /* 特殊 tokens */
+      ENDFILE,ERROR,
+      /* 保留字 */
+      IF,THEN,ELSE,END,REPEAT,UNTIL,READ,WRITE,
+      /* 多字符 tokens */
+      ID,NUM,
+      /* 特殊符号 */
+      ASSIGN,EQ,LT,PLUS,MINUS,TIMES,OVER,LPAREN,RPAREN,SEMI
+} TokenType;
 
-extern FILE* source; /* source code text file */
-extern FILE* listing; /* listing output text file */
-extern FILE* code; /* code text file for TM simulator */
+/* TINY 文件源 */
+extern FILE* source; 
+/* 结果输出流 */
+extern FILE* listing; 
+/* TM 模拟器的中间代码文件 */
+extern FILE* code; 
 
-extern int lineno; /* source line number for listing */
+/* 输出的行号 */
+extern int lineno; 
 
 /**************************************************/
-/***********   Syntax tree for parsing ************/
+/***********   parser 的语法树结构     ************/
 /**************************************************/
 
 typedef enum {StmtK,ExpK} NodeKind;
@@ -68,18 +64,16 @@ typedef struct treeNode
    } TreeNode;
 
 /**************************************************/
-/***********   Flags for tracing       ************/
+/***********   用于跟踪的 flags        ************/
 /**************************************************/
 
-/* EchoSource = TRUE causes the source program to
- * be echoed to the listing file with line numbers
- * during parsing
+/* EchoSource = TRUE 的话能够输出当前扫描器读入的行的内容
+ * 仅在扫描的过程中有效
  */
 extern int EchoSource;
 
-/* TraceScan = TRUE causes token information to be
- * printed to the listing file as each token is
- * recognized by the scanner
+/* TraceScan = TRUE 的话能够输出扫描得到的 token 的信息
+ * 仅在扫描的时候有效
  */
 extern int TraceScan;
 
@@ -101,4 +95,5 @@ extern int TraceCode;
 
 /* Error = TRUE prevents further passes if an error occurs */
 extern int Error; 
+
 #endif
