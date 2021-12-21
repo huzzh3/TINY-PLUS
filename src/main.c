@@ -1,20 +1,10 @@
-/****************************************************/
-/* File: main.c                                     */
-/* Main program for TINY compiler                   */
-/* Compiler Construction: Principles and Practice   */
-/* Kenneth C. Louden                                */
-/****************************************************/
-
 #include "globals.h"
 
-/* set NO_PARSE to TRUE to get a scanner-only compiler */
+/* 如果将 NO_PARSE 设置为 TRUE, 则不做语法分析 */
 #define NO_PARSE TRUE
-/* set NO_ANALYZE to TRUE to get a parser-only compiler */
+/* 如果将 NO_ANALYZE 设置为 TRUE, 则不做语义分析 */
 #define NO_ANALYZE TRUE
-
-/* set NO_CODE to TRUE to get a compiler that does not
- * generate code
- */
+/* 如果将 NO_CODE 设置为 TRUE, 则不生成中间代码 */
 #define NO_CODE TRUE
 
 #include "util.h"
@@ -30,13 +20,13 @@
 //#endif
 //#endif
 
-/* allocate global variables */
+/* 在 main 中设置全局变量 */
 int lineno = 0;
 FILE *source;
 FILE *listing;
 FILE *code;
 
-/* allocate and set tracing flags */
+/* 设置 flags 用于看到输出结果 */
 int EchoSource = FALSE;
 int TraceScan = TRUE;
 int TraceParse = FALSE;

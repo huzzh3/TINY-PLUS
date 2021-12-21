@@ -28,7 +28,7 @@
 typedef enum 
     /* book-keeping tokens */
    {ENDFILE,ERROR,
-    /* reserved words */
+    /* 保留字 */
     IF,THEN,ELSE,END,REPEAT,UNTIL,READ,WRITE,
     /* multicharacter tokens */
     ID,NUM,
