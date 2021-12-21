@@ -25,7 +25,7 @@ typedef enum {
       /* 多字符 tokens */
       ID,NUM,STR,
       /* 特殊符号 */
-      ASSIGN,EQ,LT,PLUS,MINUS,TIMES,OVER,LPAREN,RPAREN,SEMI,GT,LE,GE,COMMA,QUOTA
+      ASSIGN,EQ,LT,PLUS,MINUS,TIMES,OVER,LPAREN,RPAREN,SEMI,GT,LE,GE,COMMA
 } TokenType;
 
 /* TINY 文件源 */
@@ -46,40 +46,53 @@ typedef enum {StmtK,ExpK} NodeKind;
 typedef enum {IfK,RepeatK,AssignK,ReadK,WriteK} StmtKind;
 typedef enum {OpK,ConstK,IdK} ExpKind;
 
-/* ExpType is used for type checking */
+/* 用于表达式的类型检查 */
 typedef enum {Void,Integer,Boolean} ExpType;
 
 #define MAXCHILDREN 3
 
-typedef struct treeNode
-   { struct treeNode * child[MAXCHILDREN];
-     struct treeNode * sibling;
-     int lineno;
-     NodeKind nodekind;
-     union { StmtKind stmt; ExpKind exp;} kind;
-     union { TokenType op;
-             int val;
-             char * name; } attr;
-     ExpType type; /* for type checking of exps */
-   } TreeNode;
+typedef struct treeNode {
+    /* 每一个节点都有若干个孩子节点 */
+    struct treeNode * child[MAXCHILDREN];
+    /* 每一个节点还会记录兄弟节点 */
+    struct treeNode * sibling;
+
+    /* 行号，该节点对应源代码中的哪一行 */
+    int lineno;
+
+    /* 节点类型 */
+    NodeKind nodekind;
+    /* 详细的节点类型 */
+    union { 
+        StmtKind stmt; 
+        ExpKind exp;
+    } kind;
+
+    /* 属性 */
+    union { 
+        TokenType op;
+        int val;
+        /* 加入要输出 Assign to: fact，就必须要用 name 来记录下 fact */
+        char * name; 
+    } attr;
+
+    /* 用于表达式的类型检查 */
+    ExpType type; 
+} TreeNode;
 
 /**************************************************/
 /***********   用于跟踪的 flags        ************/
 /**************************************************/
 
 /* EchoSource = TRUE 的话能够输出当前扫描器读入的行的内容
- * 仅在扫描的过程中有效
  */
 extern int EchoSource;
 
 /* TraceScan = TRUE 的话能够输出扫描得到的 token 的信息
- * 仅在扫描的时候有效
  */
 extern int TraceScan;
 
-/* TraceParse = TRUE causes the syntax tree to be
- * printed to the listing file in linearized form
- * (using indents for children)
+/* TraceParse = TRUE 的时候就能够输出 syntax tree 的信息
  */
 extern int TraceParse;
 

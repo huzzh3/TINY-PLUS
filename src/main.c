@@ -1,7 +1,7 @@
 #include "globals.h"
 
 /* 如果将 NO_PARSE 设置为 TRUE, 则不做语法分析 */
-#define NO_PARSE TRUE
+#define NO_PARSE FALSE
 /* 如果将 NO_ANALYZE 设置为 TRUE, 则不做语义分析 */
 #define NO_ANALYZE TRUE
 /* 如果将 NO_CODE 设置为 TRUE, 则不生成中间代码 */
@@ -27,9 +27,9 @@ FILE *listing;
 FILE *code;
 
 /* 设置 flags 用于看到输出结果 */
-int EchoSource = TRUE;
-int TraceScan = TRUE;
-int TraceParse = FALSE;
+int EchoSource = FALSE;
+int TraceScan = FALSE;
+int TraceParse = TRUE;
 int TraceAnalyze = FALSE;
 int TraceCode = FALSE;
 
@@ -65,8 +65,7 @@ int main(int argc, char *argv[])
         ;
 #else
     syntaxTree = parse();
-    if (TraceParse)
-    {
+    if (TraceParse) {
         fprintf(listing, "\nSyntax tree:\n");
         printTree(syntaxTree);
     }

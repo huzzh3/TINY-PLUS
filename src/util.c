@@ -67,9 +67,6 @@ void printToken( TokenType token, const char* tokenString )
         case COMMA:
             fprintf(listing,"(SYM, ,)\n"); 
             break;
-        case QUOTA:
-            fprintf(listing,"(SYM, \')\n"); 
-            break;
         case ENDFILE: 
             fprintf(listing,"EOF\n"); 
             break;
@@ -147,68 +144,68 @@ char * copyString(char * s)
  */
 int static indentno = 0;
 
-/* macros to increase/decrease indentation */
-#define INDENT indentno+=2
-#define UNINDENT indentno-=2
+/* 用于增加/减少缩进的宏定义 */
+#define INDENT indentno += 4
+#define UNINDENT indentno -= 4
 
-/* printSpaces indents by printing spaces */
-static void printSpaces(void)
-{ int i;
-  for (i=0;i<indentno;i++)
-    fprintf(listing," ");
+/* 在打印 syntax 的时候输出空格 */
+static void printSpaces(void) { 
+  for (int i=0;i<indentno;i++) {
+      fprintf(listing," ");
+  }
 }
 
-/* procedure printTree prints a syntax tree to the 
- * listing file using indentation to indicate subtrees
+/* printTree 能够输出 syntax tree
+ * 输出的时候通过缩进来表示节点之间的关系(如子节点和父节点的关系)
  */
-void printTree( TreeNode * tree )
-{ int i;
-  INDENT;
-  while (tree != NULL) {
-    printSpaces();
-    if (tree->nodekind==StmtK)
-    { switch (tree->kind.stmt) {
-        case IfK:
-          fprintf(listing,"If\n");
-          break;
-        case RepeatK:
-          fprintf(listing,"Repeat\n");
-          break;
-        case AssignK:
-          fprintf(listing,"Assign to: %s\n",tree->attr.name);
-          break;
-        case ReadK:
-          fprintf(listing,"Read: %s\n",tree->attr.name);
-          break;
-        case WriteK:
-          fprintf(listing,"Write\n");
-          break;
-        default:
-          fprintf(listing,"Unknown ExpNode kind\n");
-          break;
-      }
+void printTree(TreeNode * tree) { 
+    int i;
+    INDENT;
+    while (tree != NULL) {
+        printSpaces();
+        if (tree->nodekind == StmtK) { 
+            switch (tree->kind.stmt) {
+            case IfK:
+                fprintf(listing,"If\n");
+                break;
+            case RepeatK:
+                fprintf(listing,"Repeat\n");
+                break;
+            case AssignK:
+                fprintf(listing,"Assign to: %s\n",tree->attr.name);
+                break;
+            case ReadK:
+                fprintf(listing,"Read: %s\n",tree->attr.name);
+                break;
+            case WriteK:
+                fprintf(listing,"Write\n");
+                break;
+            default:
+                fprintf(listing,"Unknown ExpNode kind\n");
+                break;
+            }
+        }
+        else if (tree->nodekind == ExpK) { 
+            switch (tree->kind.exp) {
+            case OpK:
+                fprintf(listing,"Op: ");
+                printToken(tree->attr.op,"\0");
+                break;
+            case ConstK:
+                fprintf(listing,"Const: %d\n",tree->attr.val);
+                break;
+            case IdK:
+                fprintf(listing,"Id: %s\n",tree->attr.name);
+                break;
+            default:
+                fprintf(listing,"Unknown ExpNode kind\n");
+                break;
+            }
+        }
+        else fprintf(listing,"Unknown node kind\n");
+        for (i=0;i<MAXCHILDREN;i++)
+            printTree(tree->child[i]);
+        tree = tree->sibling;
     }
-    else if (tree->nodekind==ExpK)
-    { switch (tree->kind.exp) {
-        case OpK:
-          fprintf(listing,"Op: ");
-          printToken(tree->attr.op,"\0");
-          break;
-        case ConstK:
-          fprintf(listing,"Const: %d\n",tree->attr.val);
-          break;
-        case IdK:
-          fprintf(listing,"Id: %s\n",tree->attr.name);
-          break;
-        default:
-          fprintf(listing,"Unknown ExpNode kind\n");
-          break;
-      }
-    }
-    else fprintf(listing,"Unknown node kind\n");
-    for (i=0;i<MAXCHILDREN;i++)
-         printTree(tree->child[i]);
-    tree = tree->sibling;
-  }
-  UNINDENT;
+    UNINDENT;
 }
